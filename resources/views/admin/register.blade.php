@@ -21,7 +21,7 @@
                     <div>
                         <label for="name" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Full
                             Name</label>
-                        <input type="text" id="name" name="name" required value="{{ old('name') }}"
+                        <input type="text" id="name" name="name" placeholder="John Doe" required value="{{ old('name') }}"
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-800 dark:border-gray-600 dark:text-white @error('name') border-red-500 @enderror">
                         @error('name')
                             <p class="text-sm text-red-500 mt-1">{{ $message }}</p>
@@ -32,7 +32,7 @@
                     <div>
                         <label for="email" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Admin
                             Email</label>
-                        <input type="email" id="email" name="email" required value="{{ old('email') }}"
+                        <input type="email" id="email" name="email" placeholder="name@company.com" required value="{{ old('email') }}"
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-800 dark:border-gray-600 dark:text-white @error('email') border-red-500 @enderror">
                         @error('email')
                             <p class="text-sm text-red-500 mt-1">{{ $message }}</p>
@@ -43,7 +43,7 @@
                     <div>
                         <label for="password"
                             class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Password</label>
-                        <input type="password" id="password" name="password" required
+                        <input type="password" id="password" name="password" placeholder="••••••••" required
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-800 dark:border-gray-600 dark:text-white @error('password') border-red-500 @enderror">
                         @error('password')
                             <p class="text-sm text-red-500 mt-1">{{ $message }}</p>
@@ -54,7 +54,7 @@
                     <div>
                         <label for="confirm-password"
                             class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Confirm Password</label>
-                        <input type="password" id="confirm-password" name="confirm-password" required
+                        <input type="password" id="confirm-password" name="confirm-password" placeholder="••••••••" required
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-800 dark:border-gray-600 dark:text-white @error('confirm-password') border-red-500 @enderror">
                         @error('confirm-password')
                             <p class="text-sm text-red-500 mt-1">{{ $message }}</p>

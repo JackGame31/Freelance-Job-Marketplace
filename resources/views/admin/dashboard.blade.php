@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('content')
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
         {{-- Total Jobs --}}
         <div class="flex items-center justify-between p-6 bg-white shadow-lg rounded-lg dark:bg-gray-800 dark:text-white">
             <div class="flex items-center space-x-4">

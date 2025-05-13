@@ -120,11 +120,44 @@
                 @endauth
 
                 {{-- Auth Links (Mobile only) --}}
-                <li class="md:hidden"><a href="{{ route('login') }}"
-                        class="{{ request()->routeIs('login') ? $activeClasses : $notActiveClasses }}">Login</a></li>
-                <li class="md:hidden"><a href="{{ route('register') }}"
-                        class="{{ request()->routeIs('register') ? $activeClasses : $notActiveClasses }}">Register</a>
-                </li>
+                @php
+                    $isGuestWeb = Auth::guard('web')->guest();
+                    $isGuestAdmin = Auth::guard('admin')->guest();
+                @endphp
+                @if($isGuestWeb && $isGuestAdmin)
+                    <li class="md:hidden"><a href="{{ route('login') }}"
+                            class="{{ request()->routeIs('login') ? $activeClasses : $notActiveClasses }}">Login</a></li>
+                    <li class="md:hidden"><a href="{{ route('register') }}"
+                            class="{{ request()->routeIs('register') ? $activeClasses : $notActiveClasses }}">Register</a>
+                    </li>
+                @endif
+
+                @auth('web')
+                    <li class="md:hidden">
+                        <form method="POST" action="{{ route('logout') }}">
+                            @method('DELETE')
+                            @csrf
+                            <button type="submit" class="w-full text-left text-red-600 {{ $notActiveClasses }}">
+                                Logout
+                            </button>
+                        </form>
+                    </li>
+                @endauth
+
+                @auth('admin')
+                    <li class="md:hidden"><a href="{{ route('admin.dashboard') }}"
+                            class="{{ request()->routeIs('admin.dashboard') ? $activeClasses : $notActiveClasses }}">Admin
+                            Dashboard</a></li>
+                    <li class="md:hidden">
+                        <form method="POST" action="{{ route('admin.logout') }}">
+                            @method('DELETE')
+                            @csrf
+                            <button type="submit" class="w-full text-left text-red-600 {{ $notActiveClasses }}">
+                                Logout
+                            </button>
+                        </form>
+                    </li>
+                @endauth
             </ul>
         </div>
     </div>

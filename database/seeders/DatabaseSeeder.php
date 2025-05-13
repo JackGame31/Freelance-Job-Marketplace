@@ -2,8 +2,12 @@
 
 namespace Database\Seeders;
 
+use App\Models\Freelance;
+use App\Models\Job;
 use App\Models\User;
+use App\Models\Admin;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Category;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -13,11 +17,44 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // 10 user
+        User::factory(1)->create([
+            'name' => 'user',
+            'email' => 'user@gmail.com',
+            'password' => bcrypt('password'),
         ]);
+        User::factory(9)->create();
+
+        // 10 admins
+        Admin::factory(1)->create([
+            'name' => 'user',
+            'email' => 'admin@gmail.com',
+            'password' => bcrypt('password'),
+        ]);
+        Admin::factory(9)->create();
+
+        // 5 categories
+        Category::create([
+            'name' => 'Web Development',
+        ]);
+
+        Category::create([
+            'name' => 'Graphic Design',
+        ]);
+
+        Category::create([
+            'name' => 'Content Writing',
+        ]);
+
+        Category::create([
+            'name' => 'Digital Marketing',
+        ]);
+
+        Category::create([
+            'name' => 'Mobile App Development',
+        ]);
+
+        // 20 jobs
+        Freelance::factory(40)->create();
     }
 }

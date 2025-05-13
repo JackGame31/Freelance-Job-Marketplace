@@ -15,10 +15,19 @@
                     class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg px-6 py-3">
                     Browse Jobs
                 </a>
-                <a href="{{ route('register') }}"
-                    class="inline-block bg-gray-100 hover:bg-gray-200 text-gray-900 font-medium rounded-lg px-6 py-3 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700">
-                    Join as Freelancer
-                </a>
+
+                @php
+                    $isGuestWeb = Auth::guard('web')->guest();
+                    $isGuestAdmin = Auth::guard('admin')->guest();
+                    $isGuest = $isGuestWeb || $isGuestAdmin;
+                @endphp
+                
+                @if (!$isGuest)
+                    <a href="{{ route('register') }}"
+                        class="inline-block bg-gray-100 hover:bg-gray-200 text-gray-900 font-medium rounded-lg px-6 py-3 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700">
+                        Join as Freelancer
+                    </a>
+                @endif
             </div>
         </div>
     </section>
@@ -26,12 +35,14 @@
     {{-- Categories --}}
     <section class="py-12 bg-gray-50 dark:bg-gray-800">
         <div class="container mx-auto px-6">
-            <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-6 text-center">Explore Categories</h2>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-                @foreach (['Web Development', 'Design', 'Marketing', 'Writing'] as $category)
-                    <div class="bg-white dark:bg-gray-700 rounded-lg shadow p-6 hover:shadow-md transition">
-                        <h3 class="text-lg font-medium text-gray-900 dark:text-white">{{ $category }}</h3>
-                    </div>
+            <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-8 text-center">Explore Categories</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                @foreach ($categories as $category)
+                    <a href="{{ route('search', ['category_id' => $category->id]) }}"
+                        class="block bg-white dark:bg-gray-700 rounded-lg shadow-lg p-6 hover:shadow-xl transition-transform transform hover:scale-105">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">{{ $category->name }}</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Discover jobs in {{ $category->name }}</p>
+                    </a>
                 @endforeach
             </div>
         </div>

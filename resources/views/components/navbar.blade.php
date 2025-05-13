@@ -109,7 +109,7 @@
                 <li><a href="{{ route('home') }}"
                         class="{{ request()->routeIs('home') ? $activeClasses : $notActiveClasses }}">Home</a></li>
                 <li><a href="{{ route('search') }}"
-                        class="{{ request()->routeIs('search') ? $activeClasses : $notActiveClasses }}">Search</a></li>
+                        class="{{ request()->is('search') || request()->is('search/*') ? $activeClasses : $notActiveClasses }}">Search</a></li>
                 <li><a href="{{ route('about') }}"
                         class="{{ request()->routeIs('about') ? $activeClasses : $notActiveClasses }}">About</a></li>
 
@@ -124,9 +124,10 @@
                     $isGuestWeb = Auth::guard('web')->guest();
                     $isGuestAdmin = Auth::guard('admin')->guest();
                 @endphp
-                @if($isGuestWeb && $isGuestAdmin)
+                @if ($isGuestWeb && $isGuestAdmin)
                     <li class="md:hidden"><a href="{{ route('login') }}"
-                            class="{{ request()->routeIs('login') ? $activeClasses : $notActiveClasses }}">Login</a></li>
+                            class="{{ request()->routeIs('login') ? $activeClasses : $notActiveClasses }}">Login</a>
+                    </li>
                     <li class="md:hidden"><a href="{{ route('register') }}"
                             class="{{ request()->routeIs('register') ? $activeClasses : $notActiveClasses }}">Register</a>
                     </li>

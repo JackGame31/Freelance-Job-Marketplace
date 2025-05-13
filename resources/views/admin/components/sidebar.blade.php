@@ -81,9 +81,9 @@
 
             {{-- Freelance Link --}}
             <li>
-                <a href="{{ route('admin.freelance.index') }}"
+                <a href="{{ route('admin.freelances.index') }}"
                     class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group 
-                        {{ Request::routeIs('admin.freelance.index') ? 'bg-gray-200 dark:bg-gray-700' : '' }}
+                        {{ Request::is('admin/freelance*') ? 'bg-gray-200 dark:bg-gray-700' : '' }}
                          ">
                     <i class="bi bi-card-checklist"></i>
                     <span class="ms-3">Freelance</span>

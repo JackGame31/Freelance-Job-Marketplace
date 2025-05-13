@@ -1,30 +1,17 @@
 <?php
 
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PageController;
+use App\Http\Controllers\Admin\FreelanceController;
+use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 
 // Public Routes
-Route::group([], function () {
-    // home
-    Route::get('/', function () {
-        return view('home');
-    })->name('home');
-
-    // search
-    Route::get('/search', function () {
-        return view('search');
-    })->name('search');
-
-    // detail freelance
-    Route::get('/freelance', function () {
-        return view('freelance');
-    })->name('freelance');
-
-    // about
-    Route::get('/about', function () {
-        return view('about');
-    })->name('about');
+Route::controller(PageController::class)->group(function () {
+    Route::get('/', 'home')->name('home');
+    Route::get('/search', 'search')->name('search');
+    Route::get('/search/{freelance:id}', 'show')->name('search.show');
+    Route::get('/about', 'about')->name('about');
 });
 
 // User Routes
@@ -70,21 +57,16 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     })->name('dashboard')->middleware('auth:admin');
 
     // Freelances
-    Route::get('/freelance', function () {
-        return view('admin.freelance.index');
-    })->name('freelance.index')->middleware('auth:admin');
-
-    Route::get('/freelance/create', function () {
-        return view('admin.freelance.form');
-    })->name('freelance.create')->middleware('auth:admin');
-
-    Route::get('/freelance/view', function () {
-        return view('admin.freelance.show');
-    })->name('freelance.show')->middleware('auth:admin');
-
-    Route::get('/freelance/edit', function () {
-        return view('admin.freelance.form');
-    })->name('freelance.edit')->middleware('auth:admin');
+    Route::resource('freelance', FreelanceController::class)
+        ->middleware('auth:admin')->names([
+            'index' => 'freelances.index',
+            'create' => 'freelances.create',
+            'store' => 'freelances.store',
+            'show' => 'freelances.show',
+            'edit' => 'freelances.edit',
+            'update' => 'freelances.update',
+            'destroy' => 'freelances.destroy',
+        ]);
 });
 
 Route::get('/welcome', function () {

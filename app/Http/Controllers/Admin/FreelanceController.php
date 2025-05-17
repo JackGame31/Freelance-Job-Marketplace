@@ -16,6 +16,7 @@ class FreelanceController extends Controller
     public function index()
     {
         $freelances = Freelance::with(['admin', 'category'])
+            ->withCount('applicants')
             ->where('admin_id', auth()->guard('admin')->id())
             ->latest()
             ->paginate(10);
@@ -52,8 +53,9 @@ class FreelanceController extends Controller
     public function show(Freelance $freelance)
     {
         $this->authorizeAccess($freelance);
+        $applicants = $freelance->applicants()->orderBy('created_at', 'desc')->get();
 
-        return view('admin.freelance.show', compact('freelance'));
+        return view('admin.freelance.show', compact('freelance', 'applicants'));
     }
 
     /**

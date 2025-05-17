@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\ContractController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PageController;
@@ -29,12 +30,12 @@ Route::group([], function () {
     });
 
     // Applications
-    Route::get('/application', function () {
-        return view('user.application.index');
-    })->name('application')->middleware('auth');
-    Route::get('/application/show', function () {
-        return view('user.application.show');
-    })->name('application.show')->middleware('auth');
+    Route::controller(ContractController::class)->group(function () {
+        Route::get('/application', 'application')->name('application')->middleware('auth');
+        Route::get('/application/{freelance:id}', 'show')->name('application.show')->middleware('auth');
+        Route::post('/application/{freelance:id}', 'apply')->name('application.apply')->middleware('auth');
+        Route::delete('/application/{freelance:id}', 'withdraw')->name('application.withdraw');
+    });
 });
 
 // Admin Routes
@@ -59,14 +60,22 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     // Freelances
     Route::resource('freelance', FreelanceController::class)
         ->middleware('auth:admin')->names([
-            'index' => 'freelances.index',
-            'create' => 'freelances.create',
-            'store' => 'freelances.store',
-            'show' => 'freelances.show',
-            'edit' => 'freelances.edit',
-            'update' => 'freelances.update',
-            'destroy' => 'freelances.destroy',
-        ]);
+                'index' => 'freelances.index',
+                'create' => 'freelances.create',
+                'store' => 'freelances.store',
+                'show' => 'freelances.show',
+                'edit' => 'freelances.edit',
+                'update' => 'freelances.update',
+                'destroy' => 'freelances.destroy',
+            ]);
+
+    // Contracts
+    Route::controller(ContractController::class)->group(function () {
+        Route::patch(
+            '/freelance/{freelance:id}/{user}',
+            'updateStatus'
+        )->name('freelances.applicant.status');
+    });
 });
 
 Route::get('/welcome', function () {

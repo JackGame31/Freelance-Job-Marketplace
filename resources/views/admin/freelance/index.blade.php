@@ -34,7 +34,7 @@
                             </p>
                         </td>
                         <td class="px-4 py-3">{{ $job->category->name }}</td>
-                        <td class="px-4 py-3">10</td> {{-- Placeholder for applicants count --}}
+                        <td class="px-4 py-3">{{ $job->applicants_count }}</td>
                         <td class="px-4 py-3">
                             <span class="px-2 py-1 rounded-full text-xs font-medium
                                 @if ($job->status === 'open')

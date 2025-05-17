@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Freelance;
+use App\Models\FreelanceUser;
 use App\Models\Job;
 use App\Models\User;
 use App\Models\Admin;
@@ -19,7 +20,7 @@ class DatabaseSeeder extends Seeder
     {
         // 10 user
         User::factory(1)->create([
-            'name' => 'user',
+            'name' => 'User',
             'email' => 'user@gmail.com',
             'password' => bcrypt('password'),
         ]);
@@ -27,7 +28,7 @@ class DatabaseSeeder extends Seeder
 
         // 10 admins
         Admin::factory(1)->create([
-            'name' => 'user',
+            'name' => 'Admin',
             'email' => 'admin@gmail.com',
             'password' => bcrypt('password'),
         ]);
@@ -54,7 +55,10 @@ class DatabaseSeeder extends Seeder
             'name' => 'Mobile App Development',
         ]);
 
-        // 20 jobs
+        // 40 jobs
         Freelance::factory(40)->create();
+
+        // 40 contracts
+        FreelanceUser::factory(40)->create();
     }
 }

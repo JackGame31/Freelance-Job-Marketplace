@@ -5,10 +5,11 @@
         {{ isset($freelance) ? 'Edit Freelance Job' : 'Create Freelance Job' }}
     </h1>
 
-    <form action="{{ isset($freelance) ? route('admin.freelances.update', $freelance->id) : route('admin.freelances.store') }}" 
-          method="POST" class="space-y-6">
+    <form
+        action="{{ isset($freelance) ? route('admin.freelances.update', $freelance->id) : route('admin.freelances.store') }}"
+        method="POST" class="space-y-6">
         @csrf
-        @if(isset($freelance))
+        @if (isset($freelance))
             @method('PUT')
         @endif
 
@@ -26,7 +27,8 @@
 
         {{-- Description --}}
         <div>
-            <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
+            <label for="description"
+                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
             <textarea id="description" name="description" rows="5"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 
                        dark:bg-gray-700 dark:border-gray-600 dark:text-white @error('description') border-red-500 @enderror"
@@ -36,22 +38,32 @@
             @enderror
         </div>
 
-        {{-- Logo --}}
+        {{-- Logo URL + Preview --}}
         <div>
             <label for="logo" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Logo URL</label>
             <input type="url" id="logo" name="logo"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 
-                       dark:bg-gray-700 dark:border-gray-600 dark:text-white @error('logo') border-red-500 @enderror"
-                value="{{ old('logo', $freelance->logo ?? '') }}">
+               dark:bg-gray-700 dark:border-gray-600 dark:text-white @error('logo') border-red-500 @enderror"
+                value="{{ old('logo', $freelance->logo ?? '') }}"
+                oninput="document.getElementById('logo-preview').src = this.value"
+                placeholder="https://example.com/logo.png">
             @error('logo')
                 <p class="text-sm text-red-500 mt-1">{{ $message }}</p>
             @enderror
+
+            {{-- Preview --}}
+            <div class="mt-4">
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">Logo Preview:</p>
+                <img id="logo-preview" src="{{ old('logo', $freelance->logo ?? '') }}" alt="Logo preview"
+                    class="w-full max-w-xs h-32 object-cover border rounded dark:border-gray-600">
+            </div>
         </div>
 
         {{-- Salary Range --}}
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-                <label for="start_salary" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Start Salary</label>
+                <label for="start_salary" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Start
+                    Salary</label>
                 <input type="number" step="0.01" id="start_salary" name="start_salary"
                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 
                            dark:bg-gray-700 dark:border-gray-600 dark:text-white @error('start_salary') border-red-500 @enderror"
@@ -62,7 +74,8 @@
             </div>
 
             <div>
-                <label for="end_salary" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">End Salary</label>
+                <label for="end_salary" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">End
+                    Salary</label>
                 <input type="number" step="0.01" id="end_salary" name="end_salary"
                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 
                            dark:bg-gray-700 dark:border-gray-600 dark:text-white @error('end_salary') border-red-500 @enderror"
@@ -78,9 +91,12 @@
             <label for="status" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Status</label>
             <select name="status" id="status"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 
-                       dark:bg-gray-700 dark:border-gray-600 dark:text-white @error('status') border-red-500 @enderror" required>
-                <option value="open" {{ old('status', $freelance->status ?? '') === 'open' ? 'selected' : '' }}>Open</option>
-                <option value="closed" {{ old('status', $freelance->status ?? '') === 'closed' ? 'selected' : '' }}>Closed</option>
+                       dark:bg-gray-700 dark:border-gray-600 dark:text-white @error('status') border-red-500 @enderror"
+                required>
+                <option value="open" {{ old('status', $freelance->status ?? '') === 'open' ? 'selected' : '' }}>Open
+                </option>
+                <option value="closed" {{ old('status', $freelance->status ?? '') === 'closed' ? 'selected' : '' }}>Closed
+                </option>
             </select>
             @error('status')
                 <p class="text-sm text-red-500 mt-1">{{ $message }}</p>
@@ -92,9 +108,10 @@
             <label for="category_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Category</label>
             <select name="category_id" id="category_id"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 
-                       dark:bg-gray-700 dark:border-gray-600 dark:text-white @error('category_id') border-red-500 @enderror" required>
+                       dark:bg-gray-700 dark:border-gray-600 dark:text-white @error('category_id') border-red-500 @enderror"
+                required>
                 <option value="">Select a category</option>
-                @foreach($categories as $category)
+                @foreach ($categories as $category)
                     <option value="{{ $category->id }}"
                         {{ old('category_id', $freelance->category_id ?? '') == $category->id ? 'selected' : '' }}>
                         {{ $category->name }}
@@ -106,8 +123,7 @@
             @enderror
         </div>
 
-        <button type="submit"
-            class="text-white bg-blue-600 hover:bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5">
+        <button type="submit" class="text-white bg-blue-600 hover:bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5">
             {{ isset($freelance) ? 'Update' : 'Create' }}
         </button>
     </form>

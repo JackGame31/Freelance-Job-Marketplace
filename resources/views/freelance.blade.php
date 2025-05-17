@@ -49,24 +49,21 @@
 
         {{-- Apply Section --}}
         @guest('admin')
-        <div class="mt-8">
-            @auth
-                <form action="
-                    {{-- {{ route('freelance.apply', $freelance->id) }} --}}
-                 "
-                    method="POST">
-                    @csrf
-                    <button type="submit"
-                        class="w-full sm:w-auto px-6 py-2 text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                        Apply for this Job
-                    </button>
-                </form>
-            @else
-                <div class="bg-yellow-50 text-yellow-800 p-4 rounded mb-4 mt-6 dark:bg-yellow-800 dark:text-yellow-200">
-                    Please <a href="{{ route('login') }}" class="underline font-medium">log in</a> to apply for this job.
-                </div>
-            @endauth
-        </div>
+            <div class="mt-8">
+                @auth
+                    <form action="{{ route('application.apply', $freelance->id) }}" method="POST">
+                        @csrf
+                        <button type="submit"
+                            class="w-full sm:w-auto px-6 py-2 text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                            Apply for this Job
+                        </button>
+                    </form>
+                @else
+                    <div class="bg-yellow-50 text-yellow-800 p-4 rounded mb-4 mt-6 dark:bg-yellow-800 dark:text-yellow-200">
+                        Please <a href="{{ route('login') }}" class="underline font-medium">log in</a> to apply for this job.
+                    </div>
+                @endauth
+            </div>
         @else
             <div class="mt-8">
                 <p class="text-gray-500 dark:text-gray-400">

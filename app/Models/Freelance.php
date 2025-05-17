@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Freelance extends Model
 {
@@ -20,5 +21,10 @@ class Freelance extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function applicants(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class)->using(FreelanceUser::class)->withPivot(['status', 'start_date', 'end_date', 'final_salary'])->withTimestamps();
     }
 }

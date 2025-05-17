@@ -39,6 +39,11 @@ class PageController extends Controller
 
     public function show(Freelance $freelance)
     {
+        $user = auth()->user();
+        if ($user && $freelance->applicants()->where('user_id', $user->id)->exists()) {
+            return redirect()->route('application.show', $freelance->id);
+        }
+
         return view('freelance', [
             'freelance' => $freelance->load(['admin', 'category']),
         ]);

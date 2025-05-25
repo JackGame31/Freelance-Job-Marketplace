@@ -115,7 +115,7 @@
 
                 @auth
                     <li><a href="{{ route('application') }}"
-                            class="{{ request()->is('application/*') ? $activeClasses : $notActiveClasses }}">Your
+                            class="{{ request()->is('application') || request()->is('application/*') ? $activeClasses : $notActiveClasses }}">Your
                             Applications</a></li>
                 @endauth
 

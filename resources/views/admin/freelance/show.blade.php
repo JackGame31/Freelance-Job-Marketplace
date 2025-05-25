@@ -86,77 +86,107 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($applicants as $applicant)
-                        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                            <td class="px-4 py-3">{{ $applicant->name }}</td>
-                            <td class="px-4 py-3">{{ $applicant->email }}</td>
-                            <td class="px-4 py-3">
-                                <span
-                                    class="text-sm font-medium px-2 py-1 rounded-full
-                                        @if ($applicant->pivot->status === 'accepted') bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300
-                                        @elseif ($applicant->pivot->status === 'rejected')
-                                            bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300
-                                        @else
-                                            bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300 @endif">
-                                    {{ ucfirst($applicant->pivot->status) }}
-                                </span>
-                            </td>
-                            <td class="px-4 py-3">
-                                @if ($applicant->pivot->start_date && $applicant->pivot->end_date)
-                                    {{ \Carbon\Carbon::parse($applicant->pivot->start_date)->format('d M Y') }} -
-                                    {{ \Carbon\Carbon::parse($applicant->pivot->end_date)->format('d M Y') }}
-                                @else
-                                    N/A
-                                @endif
-                            </td>
-                            <td class="px-4 py-3">
-                                @if ($applicant->pivot->final_salary)
-                                    ${{ number_format($applicant->pivot->final_salary, 2) }}
-                                @else
-                                    N/A
-                                @endif
-                            </td>
-                            <td class="px-4 py-3 space-x-2">
-                                {{-- Approve/Edit --}}
-                                @if ($applicant->pivot->status === 'accepted')
-                                    <button type="button"
-                                        class="text-sm text-yellow-600 hover:underline dark:text-yellow-400"
-                                        onclick="prepareApprovalModal('{{ route('admin.freelances.applicant.status', [$freelance->id, $applicant->id]) }}', 
-                                        { 
-                                            start_date: '{{ $applicant->pivot->start_date }}', 
-                                            end_date: '{{ $applicant->pivot->end_date }}', 
-                                            final_salary: '{{ $applicant->pivot->final_salary }}' 
-                                        })">
-                                        Edit
-                                    </button>
-                                @else
-                                    <button type="button"
-                                        class="text-sm text-green-600 hover:underline dark:text-green-400"
-                                        onclick="prepareApprovalModal(
-                                            '{{ route('admin.freelances.applicant.status', [$freelance->id, $applicant->id]) }}',
-                                            { 
-                                                start_date: '{{ \Carbon\Carbon::now()->toDateString() }}', 
-                                                end_date: '', 
-                                                final_salary: '{{ $freelance->start_salary }}' 
-                                            })">
-                                        Approve
-                                    </button>
-                                @endif
-
-                                <form method="POST"
-                                    action="{{ route('admin.freelances.applicant.status', [$freelance->id, $applicant->id]) }}"
-                                    class="inline">
-                                    @csrf
-                                    @method('PATCH')
-                                    <input type="hidden" name="status" value="rejected" />
-                                    <button type="submit"
-                                        @if ($applicant->pivot->status === 'rejected') disabled class="opacity-50 cursor-not-allowed" @else class="text-sm text-red-600 hover:underline dark:text-red-400" @endif>
-                                        Reject
-                                    </button>
-                                </form>
+                    @if ($applicants->isEmpty())
+                        <tr>
+                            <td colspan="6" class="px-4 py-6 text-center text-gray-500 dark:text-gray-400">
+                                No applicants found.
                             </td>
                         </tr>
-                    @endforeach
+                    @else
+                        @foreach ($applicants as $applicant)
+                            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                <td class="px-4 py-3">{{ $applicant->name }}</td>
+                                <td class="px-4 py-3">{{ $applicant->email }}</td>
+                                <td class="px-4 py-3">
+                                    <span
+                                        class="text-sm font-medium px-2 py-1 rounded-full
+                                            @if ($applicant->pivot->status === 'accepted') bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300
+                                            @elseif ($applicant->pivot->status === 'rejected')
+                                                bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300
+                                            @else
+                                                bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300 @endif">
+                                        {{ ucfirst($applicant->pivot->status) }}
+                                    </span>
+                                </td>
+                                <td class="px-4 py-3">
+                                    @if ($applicant->pivot->start_date && $applicant->pivot->end_date)
+                                        {{ \Carbon\Carbon::parse($applicant->pivot->start_date)->format('d M Y') }} -
+                                        {{ \Carbon\Carbon::parse($applicant->pivot->end_date)->format('d M Y') }}
+                                        <button type="button"
+                                            class="text-yellow-600 hover:text-yellow-800 dark:text-yellow-400 dark:hover:text-yellow-300 p-1"
+                                            title="Edit"
+                                            onclick="prepareApprovalModal('{{ route('admin.freelances.applicant.status', [$freelance->id, $applicant->id]) }}', 
+                                            { 
+                                                start_date: '{{ $applicant->pivot->start_date }}', 
+                                                end_date: '{{ $applicant->pivot->end_date }}', 
+                                                final_salary: '{{ $applicant->pivot->final_salary }}' 
+                                            })">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536M9 13l6.586-6.586a2 2 0 112.828 2.828L11.828 15.828a2 2 0 01-2.828 0L9 13zm-6 6h6"/>
+                                            </svg>
+                                        </button>
+                                    @else
+                                        N/A
+                                    @endif
+                                </td>
+                                <td class="px-4 py-3">
+                                    @if ($applicant->pivot->final_salary)
+                                        ${{ number_format($applicant->pivot->final_salary, 2) }}
+                                        <button type="button"
+                                            class="text-yellow-600 hover:text-yellow-800 dark:text-yellow-400 dark:hover:text-yellow-300 p-1"
+                                            title="Edit"
+                                            onclick="prepareApprovalModal('{{ route('admin.freelances.applicant.status', [$freelance->id, $applicant->id]) }}', 
+                                            { 
+                                                start_date: '{{ $applicant->pivot->start_date }}', 
+                                                end_date: '{{ $applicant->pivot->end_date }}', 
+                                                final_salary: '{{ $applicant->pivot->final_salary }}' 
+                                            })">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536M9 13l6.586-6.586a2 2 0 112.828 2.828L11.828 15.828a2 2 0 01-2.828 0L9 13zm-6 6h6"/>
+                                            </svg>
+                                        </button>
+                                    @else
+                                        N/A
+                                    @endif
+                                </td>
+                                <td class="px-4 py-3 space-x-2">
+                                    {{-- Approve/Edit --}}
+                                    @if ($applicant->pivot->status !== 'accepted')
+                                        <button type="button"
+                                            class="text-sm text-green-600 hover:underline dark:text-green-400"
+                                            onclick="prepareApprovalModal(
+                                                '{{ route('admin.freelances.applicant.status', [$freelance->id, $applicant->id]) }}',
+                                                { 
+                                                    start_date: '{{ \Carbon\Carbon::now()->toDateString() }}', 
+                                                    end_date: '', 
+                                                    final_salary: '{{ $freelance->start_salary }}' 
+                                                })">
+                                            Approve
+                                        </button>
+                                    @else
+                                        <a href="{{ route('admin.freelances.applicant', [$freelance->id, $applicant->id]) }}"
+                                            class="text-sm text-blue-600 hover:underline dark:text-blue-400">
+                                            View
+                                        </a>
+                                    @endif
+
+                                    @if ($applicant->pivot->status !== 'rejected')
+                                        <form method="POST"
+                                            action="{{ route('admin.freelances.applicant.status', [$freelance->id, $applicant->id]) }}"
+                                            class="inline">
+                                            @csrf
+                                            @method('PATCH')
+                                            <input type="hidden" name="status" value="rejected" />
+                                            <button type="submit"
+                                                @if ($applicant->pivot->status === 'rejected') disabled class="opacity-50 cursor-not-allowed" @else class="text-sm text-red-600 hover:underline dark:text-red-400" @endif>
+                                                Reject
+                                            </button>
+                                        </form>
+                                    @endif
+                                </td>
+                            </tr>
+                        @endforeach
+                    @endif
                 </tbody>
             </table>
         </div>

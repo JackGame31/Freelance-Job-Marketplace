@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\User;
+use App\Models\Payment;
 use App\Models\Freelance;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -21,7 +22,7 @@ class ContractController extends Controller
         return view('user.application.index', compact('applications'));
     }
 
-    public function show(Freelance $freelance)
+    public function showUser(Freelance $freelance)
     {
         $user = auth()->user();
 
@@ -35,7 +36,12 @@ class ContractController extends Controller
             abort(404); // If the user has not applied
         }
 
-        return view('user.application.show', compact('freelance', 'application'));
+        // get payment history
+        $applicant = $freelance->applicants()->where('user_id', auth()->id())->first();
+        $payments = $applicant ? Payment::where('contract_id', $applicant->pivot->id)->latest()->paginate(5) : collect();
+        $totalPayment = $applicant ? Payment::where('contract_id', $applicant->pivot->id)->sum('amount') : 0;
+
+        return view('user.application.show', compact('freelance', 'application', 'payments', 'totalPayment'));
     }
 
     public function apply(Freelance $freelance)
@@ -57,6 +63,19 @@ class ContractController extends Controller
     }
 
     // admin authorized
+    public function showAdmin(Freelance $freelance, User $user)
+    {
+        // Verify ownership
+        abort_if($freelance->admin_id !== auth()->guard('admin')->id(), 403);
+
+        $applicant = $freelance->applicants()->where('user_id', $user->id)->firstOrFail();
+
+        $payments = Payment::where('contract_id', $applicant->pivot->id)->latest()->paginate(5);
+        $totalPayment = Payment::where('contract_id', $applicant->pivot->id)->sum('amount');
+
+        return view('admin.freelance.applicant', compact('freelance', 'applicant', 'payments', 'totalPayment'));
+    }
+
     public function updateStatus(Request $request, Freelance $freelance, User $user)
     {
         // Verify ownership
@@ -86,5 +105,27 @@ class ContractController extends Controller
         $freelance->applicants()->updateExistingPivot($user->id, $data);
 
         return redirect()->back()->with('success', 'Application status updated.');
+    }
+
+    public function pay(Request $request, Freelance $freelance, User $user)
+    {
+        $data = $request->validate([
+            'amount' => 'required|numeric|min:1',
+            'notes' => 'nullable|string|max:255',
+        ]);
+
+        $contract_id = $freelance->applicants()
+            ->where('user_id', $user->id)
+            ->first()
+            ->pivot
+            ->id;
+        
+        Payment::create([
+            'contract_id' => $contract_id,
+            'amount' => $data['amount'],
+            'notes' => $data['notes'],
+        ]);
+
+        return redirect()->back()->with('success', 'Payment recorded successfully.');
     }
 }

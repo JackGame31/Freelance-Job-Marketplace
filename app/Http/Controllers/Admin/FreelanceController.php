@@ -53,7 +53,7 @@ class FreelanceController extends Controller
     public function show(Freelance $freelance)
     {
         $this->authorizeAccess($freelance);
-        $applicants = $freelance->applicants()->orderBy('created_at', 'desc')->get();
+        $applicants = $freelance->applicants()->orderBy('updated_at', 'desc')->get();
 
         return view('admin.freelance.show', compact('freelance', 'applicants'));
     }

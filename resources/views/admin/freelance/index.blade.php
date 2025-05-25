@@ -25,41 +25,49 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($freelances as $job)
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                        <td class="px-4 py-3">
-                            <div class="font-semibold text-gray-900 dark:text-white">{{ $job->title }}</div>
-                            <p class="text-sm text-gray-500 dark:text-gray-400">
-                                {{ \Illuminate\Support\Str::limit($job->description, 60) }}
-                            </p>
-                        </td>
-                        <td class="px-4 py-3">{{ $job->category->name }}</td>
-                        <td class="px-4 py-3">{{ $job->applicants_count }}</td>
-                        <td class="px-4 py-3">
-                            <span class="px-2 py-1 rounded-full text-xs font-medium
-                                @if ($job->status === 'open')
-                                    bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300
-                                @else
-                                    bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300
-                                @endif
-                            ">
-                                {{ ucfirst($job->status) }}
-                            </span>
-                        </td>
-                        <td class="px-4 py-3 space-x-2">
-                            <a href="{{ route('admin.freelances.show', $job['id']) }}"
-                                class="text-blue-600 hover:underline dark:text-blue-400">View</a>
-                            <a href="{{ route('admin.freelances.edit', $job['id']) }}"
-                                class="text-gray-700 hover:underline dark:text-gray-300">Edit</a>
-                            <form action="{{ route('admin.freelances.destroy', $job['id']) }}" method="POST" class="inline-block">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-red-600 hover:underline dark:text-red-400"
-                                    onclick="return confirm('Are you sure you want to delete this job?')">Delete</button>
-                            </form>
+                @if ($freelances->isEmpty())
+                    <tr>
+                        <td colspan="5" class="px-4 py-6 text-center text-gray-500 dark:text-gray-400">
+                            No freelance jobs found.
                         </td>
                     </tr>
-                @endforeach
+                @else
+                    @foreach ($freelances as $job)
+                        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                            <td class="px-4 py-3">
+                                <div class="font-semibold text-gray-900 dark:text-white">{{ $job->title }}</div>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">
+                                    {{ \Illuminate\Support\Str::limit($job->description, 60) }}
+                                </p>
+                            </td>
+                            <td class="px-4 py-3">{{ $job->category->name }}</td>
+                            <td class="px-4 py-3">{{ $job->applicants_count }}</td>
+                            <td class="px-4 py-3">
+                                <span class="px-2 py-1 rounded-full text-xs font-medium
+                                    @if ($job->status === 'open')
+                                        bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300
+                                    @else
+                                        bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300
+                                    @endif
+                                ">
+                                    {{ ucfirst($job->status) }}
+                                </span>
+                            </td>
+                            <td class="px-4 py-3 space-x-2">
+                                <a href="{{ route('admin.freelances.show', $job['id']) }}"
+                                    class="text-blue-600 hover:underline dark:text-blue-400">View</a>
+                                <a href="{{ route('admin.freelances.edit', $job['id']) }}"
+                                    class="text-gray-700 hover:underline dark:text-gray-300">Edit</a>
+                                <form action="{{ route('admin.freelances.destroy', $job['id']) }}" method="POST" class="inline-block">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-red-600 hover:underline dark:text-red-400"
+                                        onclick="return confirm('Are you sure you want to delete this job?')">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                @endif
             </tbody>
         </table>
     </div>

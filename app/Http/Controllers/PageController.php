@@ -22,8 +22,13 @@ class PageController extends Controller
         $freelances = Freelance::with(['admin', 'category'])
             ->where('status', 'open')
             ->when($query, function ($q) use ($query) {
-                $q->where('title', 'like', "%{$query}%")
-                    ->orWhere('description', 'like', "%{$query}%");
+                $q->where(function ($subQuery) use ($query) {
+                    $subQuery->where('title', 'like', "%{$query}%")
+                        ->orWhere('description', 'like', "%{$query}%")
+                        ->orWhereHas('admin', function ($adminQuery) use ($query) {
+                            $adminQuery->where('name', 'like', "%{$query}%");
+                        });
+                });
             })
             ->when($categoryId, function ($q) use ($categoryId) {
                 $q->where('category_id', $categoryId);

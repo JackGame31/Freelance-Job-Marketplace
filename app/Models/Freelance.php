@@ -25,6 +25,6 @@ class Freelance extends Model
 
     public function applicants(): BelongsToMany
     {
-        return $this->belongsToMany(User::class)->using(FreelanceUser::class)->withPivot(['status', 'start_date', 'end_date', 'final_salary'])->withTimestamps();
+        return $this->belongsToMany(User::class)->using(FreelanceUser::class)->withPivot(['id', 'status', 'start_date', 'end_date', 'final_salary'])->withTimestamps();
     }
 }

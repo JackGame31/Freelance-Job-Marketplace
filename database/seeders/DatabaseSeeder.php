@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Freelance;
 use App\Models\FreelanceUser;
 use App\Models\Job;
+use App\Models\Payment;
 use App\Models\User;
 use App\Models\Admin;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -60,5 +61,8 @@ class DatabaseSeeder extends Seeder
 
         // 40 contracts
         FreelanceUser::factory(40)->create();
+
+        // 100 payments
+        Payment::factory(100)->create();
     }
 }

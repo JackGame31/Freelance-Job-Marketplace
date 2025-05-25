@@ -53,39 +53,86 @@
 
         {{-- Accepted Details --}}
         @if ($application->pivot->status === 'accepted')
-            <div class="mt-8">
-                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Assignment Details</h2>
+            {{-- Accepted Details --}}
+            @if ($application->pivot->status === 'accepted')
+                <div class="mt-8">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Assignment Details</h2>
 
-                <div
-                    class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-gray-50 dark:bg-gray-700 p-4 rounded-lg shadow-sm border dark:border-gray-600">
-                    {{-- Start Date --}}
-                    <div class="flex flex-col gap-1">
-                        <span class="text-sm text-gray-500 dark:text-gray-300">Start Date</span>
-                        <div class="text-base font-medium text-gray-800 dark:text-white flex items-center gap-2">
-                            <i class="bi bi-calendar-event-fill text-blue-500"></i>
-                            {{ \Carbon\Carbon::parse($application->pivot->start_date)->format('M d, Y') }}
+                    <div
+                        class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-gray-50 dark:bg-gray-700 p-4 rounded-lg shadow-sm border dark:border-gray-600">
+                        {{-- Start Date --}}
+                        <div class="flex flex-col gap-1">
+                            <span class="text-sm text-gray-500 dark:text-gray-300">Start Date</span>
+                            <div class="text-base font-medium text-gray-800 dark:text-white flex items-center gap-2">
+                                <i class="bi bi-calendar-event-fill text-blue-500"></i>
+                                {{ \Carbon\Carbon::parse($application->pivot->start_date)->format('M d, Y') }}
+                            </div>
                         </div>
-                    </div>
 
-                    {{-- End Date --}}
-                    <div class="flex flex-col gap-1">
-                        <span class="text-sm text-gray-500 dark:text-gray-300">End Date</span>
-                        <div class="text-base font-medium text-gray-800 dark:text-white flex items-center gap-2">
-                            <i class="bi bi-calendar-check-fill text-green-500"></i>
-                            {{ \Carbon\Carbon::parse($application->pivot->end_date)->format('M d, Y') }}
+                        {{-- End Date --}}
+                        <div class="flex flex-col gap-1">
+                            <span class="text-sm text-gray-500 dark:text-gray-300">End Date</span>
+                            <div class="text-base font-medium text-gray-800 dark:text-white flex items-center gap-2">
+                                <i class="bi bi-calendar-check-fill text-green-500"></i>
+                                {{ \Carbon\Carbon::parse($application->pivot->end_date)->format('M d, Y') }}
+                            </div>
                         </div>
-                    </div>
 
-                    {{-- Final Salary --}}
-                    <div class="flex flex-col gap-1">
-                        <span class="text-sm text-gray-500 dark:text-gray-300">Final Salary</span>
-                        <div class="text-base font-semibold text-gray-800 dark:text-white flex items-center gap-2">
-                            <i class="bi bi-cash-stack text-yellow-500"></i>
-                            ${{ number_format($application->pivot->final_salary, 2) }}
+                        {{-- Agreed Salary --}}
+                        <div class="flex flex-col gap-1">
+                            <span class="text-sm text-gray-500 dark:text-gray-300">Agreed Salary</span>
+                            <div class="text-base font-semibold text-gray-800 dark:text-white flex items-center gap-2">
+                                <i class="bi bi-wallet2 text-yellow-500"></i>
+                                ${{ number_format($application->pivot->final_salary, 2) }}
+                            </div>
+                        </div>
+
+                        {{-- Total Received --}}
+                        <div class="flex flex-col gap-1 md:col-span-3">
+                            <span class="text-sm text-gray-500 dark:text-gray-300">Total Received</span>
+                            <div class="text-base font-semibold text-gray-800 dark:text-white flex items-center gap-2">
+                                <i class="bi bi-currency-dollar text-green-500"></i>
+                                ${{ number_format($totalPayment, 2) }}
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+
+                {{-- Payment History --}}
+                @if ($payments->isNotEmpty())
+                    <div class="mt-8">
+                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Payment History</h2>
+
+                        <div
+                            class="overflow-x-auto rounded-lg shadow-sm border dark:border-gray-600">
+                            <table class="w-full text-sm text-left text-gray-600 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700">
+                                <thead class="text-xs uppercase bg-gray-100 dark:bg-gray-900 dark:text-white">
+                                    <tr>
+                                        <th class="px-4 py-3">Amount</th>
+                                        <th class="px-4 py-3">Date</th>
+                                        <th class="px-4 py-3">Notes</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($payments as $payment)
+                                        <tr
+                                            class="bg-white dark:bg-gray-800 dark:text-gray-300 border-t dark:border-gray-600">
+                                            <td class="px-4 py-3 font-medium">${{ number_format($payment->amount, 2) }}
+                                            </td>
+                                            <td class="px-4 py-3">{{ $payment->created_at->format('M d, Y') }}</td>
+                                            <td class="px-4 py-3">{{ $payment->notes ?? '-' }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+
+                            <div class="p-4">
+                                {{ $payments->links() }}
+                            </div>
+                        </div>
+                    </div>
+                @endif
+            @endif
         @endif
 
         {{-- Withdraw Button --}}

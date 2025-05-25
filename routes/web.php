@@ -30,12 +30,14 @@ Route::group([], function () {
     });
 
     // Applications
-    Route::controller(ContractController::class)->group(function () {
-        Route::get('/application', 'application')->name('application')->middleware('auth');
-        Route::get('/application/{freelance:id}', 'show')->name('application.show')->middleware('auth');
-        Route::post('/application/{freelance:id}', 'apply')->name('application.apply')->middleware('auth');
-        Route::delete('/application/{freelance:id}', 'withdraw')->name('application.withdraw');
-    });
+    Route::controller(ContractController::class)
+        ->middleware('auth')
+        ->group(function () {
+            Route::get('/application', 'application')->name('application')->middleware('auth');
+            Route::get('/application/{freelance:id}', 'showUser')->name('application.show')->middleware('auth');
+            Route::post('/application/{freelance:id}', 'apply')->name('application.apply')->middleware('auth');
+            Route::delete('/application/{freelance:id}', 'withdraw')->name('application.withdraw');
+        });
 });
 
 // Admin Routes
@@ -52,29 +54,37 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::delete('/logout', 'logout')->name('logout')->middleware('auth:admin');
     });
 
-    // Dashboard
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('dashboard')->middleware('auth:admin');
+    // Logged in admin routes
+    Route::middleware('auth:admin')->group(function () {
+        // Dashboard
+        Route::get('/dashboard', function () {
+            return view('admin.dashboard');
+        })->name('dashboard');
 
-    // Freelances
-    Route::resource('freelance', FreelanceController::class)
-        ->middleware('auth:admin')->names([
-                'index' => 'freelances.index',
-                'create' => 'freelances.create',
-                'store' => 'freelances.store',
-                'show' => 'freelances.show',
-                'edit' => 'freelances.edit',
-                'update' => 'freelances.update',
-                'destroy' => 'freelances.destroy',
-            ]);
+        // Freelances
+        Route::resource('freelance', FreelanceController::class)
+            ->middleware('auth:admin')->names([
+                    'index' => 'freelances.index',
+                    'create' => 'freelances.create',
+                    'store' => 'freelances.store',
+                    'show' => 'freelances.show',
+                    'edit' => 'freelances.edit',
+                    'update' => 'freelances.update',
+                    'destroy' => 'freelances.destroy',
+                ]);
 
-    // Contracts
-    Route::controller(ContractController::class)->group(function () {
-        Route::patch(
-            '/freelance/{freelance:id}/{user}',
-            'updateStatus'
-        )->name('freelances.applicant.status');
+        // Contracts
+        Route::controller(ContractController::class)->group(function () {
+            Route::get(
+                '/freelance/{freelance}/{user}',
+                'showAdmin'
+            )->name('freelances.applicant')->middleware('auth:admin');
+            Route::patch(
+                '/freelance/{freelance}/{user}',
+                'updateStatus'
+            )->name('freelances.applicant.status');
+            Route::post('/freelance/{freelance}/{user}/pay', 'pay')->name('freelances.applicant.pay');
+        });
     });
 });
 

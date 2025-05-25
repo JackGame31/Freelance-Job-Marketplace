@@ -49,6 +49,6 @@ class User extends Authenticatable
 
     public function freelances(): BelongsToMany
     {
-        return $this->belongsToMany(Freelance::class)->using(FreelanceUser::class)->withPivot(['status', 'start_date', 'end_date', 'final_salary'])->withTimestamps();
+        return $this->belongsToMany(Freelance::class)->using(FreelanceUser::class)->withPivot(['id', 'status', 'start_date', 'end_date', 'final_salary'])->withTimestamps();
     }
 }
